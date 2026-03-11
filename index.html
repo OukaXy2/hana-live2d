@@ -298,18 +298,12 @@
   </div>
 </div>
 
-<!-- Live2D Core -->
+<!-- Live2D Cubism Core -->
 <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
-<!-- PIXI -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/6.5.10/browser/pixi.min.js"></script>
-<!-- pixi-live2d-display (bundle includes PIXI patch) -->
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js"></script>
-<script>
-  // Patch: expose Live2DModel to PIXI namespace
-  if (window.PIXI && window.Live2DModel) {
-    window.PIXI.live2d = { Live2DModel: window.Live2DModel };
-  }
-</script>
+<!-- PIXI v5 (required by pixi-live2d-display@0.4) -->
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.12/dist/pixi.min.js"></script>
+<!-- pixi-live2d-display -->
+<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/cubism4.min.js"></script>
 
 <script>
 // ── CONFIG ──
@@ -486,8 +480,9 @@ let model = null;
 
 async function loadModel() {
   try {
-    const Live2DModel = window.Live2DModel || (PIXI.live2d && PIXI.live2d.Live2DModel);
-    if (!Live2DModel) throw new Error('Live2DModel tidak ditemukan!');
+    // cubism4.min.js exposes Live2DModel via PIXI.live2d
+    const Live2DModel = PIXI?.live2d?.Live2DModel;
+    if (!Live2DModel) throw new Error('Live2DModel tidak ditemukan! Library gagal load.');
     
     model = await Live2DModel.from(MODEL_URL, {
       onError(e) { console.warn('Live2D load warning:', e); }
